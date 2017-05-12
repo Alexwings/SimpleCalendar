@@ -322,6 +322,7 @@
 				7DE47EDF1EBCE670004B51DB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

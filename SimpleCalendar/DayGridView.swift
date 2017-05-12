@@ -12,6 +12,12 @@ class DayGridView: BaseView {
     
     let cellIdentifier = "dayGridIdetifier"
     
+    weak var delegate: UICollectionViewDelegate? {
+        didSet {
+            self.collectionView.delegate = delegate
+        }
+    }
+    
     lazy var collectionView: UICollectionView = { [unowned self] in
         let layout = UICollectionViewFlowLayout()
         let cl = UICollectionView(frame: .zero, collectionViewLayout: layout)

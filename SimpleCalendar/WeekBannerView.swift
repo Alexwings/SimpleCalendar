@@ -25,6 +25,7 @@ class WeekBannerView: BaseView {
         }
         return arr
     }()
+    
     override func setupViews() {
         
         backgroundColor = UIConfig.weekBannerColor

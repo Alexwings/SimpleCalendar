@@ -29,6 +29,9 @@ class CalendarView: BaseView {
     
     let weekdayBanner: WeekBannerView = WeekBannerView(frame: .zero)
     
+    let grid: DayGridView
+    
+    
     override func setupViews() {
         backgroundColor = UIConfig.backgroundColor
         

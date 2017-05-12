@@ -10,7 +10,10 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let calendar: CalendarView = CalendarView()
+    lazy var calendar: CalendarView = {
+        let c = CalendarView()
+        
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
