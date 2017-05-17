@@ -36,6 +36,8 @@ enum Weekdays: String {
 class UIConfig {
     static let weekdays: [Weekdays] = [.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
     
+    static let test: [Int] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+    
     static let shared = UIConfig()
     
     private init() {}
@@ -58,9 +60,10 @@ class UIConfig {
     
     static let topBannerButtonWidth: CGFloat = 50
     
-    static let mainFrameHeight: CGFloat = 280
+    static var mainFrameHeight: CGFloat = (UIScreen.main.bounds.size.height * 5) / 12
     
     static let weekdayBannerHeight: CGFloat = 30
+    static let windowWidth: CGFloat = UIScreen.main.bounds.size.width
     
     func configureTopBanner(button: inout UIButton) {
         button.translatesAutoresizingMaskIntoConstraints = false

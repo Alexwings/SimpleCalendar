@@ -28,18 +28,28 @@ extension CalendarViewModel: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 //        return dayList.count
-        return 4
+        return UIConfig.test.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let dayCell = collectionView.dequeueReusableCell(withReuseIdentifier: DayGridView.cellIdentifier, for: indexPath)
         if let dayCell = dayCell as? DayCell {
 //            let day = dayList[indexPath.item]
-            
 //            dayCell.label.text = String(day.day)
-            dayCell.backgroundColor = .blue
+            let testText = String(UIConfig.test[indexPath.item])
+            dayCell.label.text = testText
             return dayCell
         }
         return UICollectionViewCell()
+    }
+}
+
+extension CalendarViewModel: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        var width: CGFloat = 0
+        if let control = controller as? ViewController {
+            width = control.calendar.bounds.size.width / 7.0
+        }
+        return CGSize(width: width, height: width)
     }
 }

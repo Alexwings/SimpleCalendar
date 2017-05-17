@@ -12,6 +12,7 @@ class DayCell: UICollectionViewCell {
     let label: UILabel = {
         let l = UILabel()
         l.text = "01"
+        l.textColor = UIConfig.normalTextColor
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
     }()
@@ -24,24 +25,17 @@ class DayCell: UICollectionViewCell {
         return l
     }()
     
-    var highlightColor = UIConfig.cellSelectedColor
-    var normalColor = UIColor.white
-    
-    var highlightTextColor = UIConfig.selectedTextColor
-    var normalTextColor = UIColor.white
-    
     override var isSelected: Bool{
         didSet {
-            if isSelected {
-                label.textColor = normalTextColor
-                backgroundColor = normalColor
-                line.isHidden = true
-            }else {
-                label.textColor = highlightTextColor
-                backgroundColor = highlightColor
-                line.isHidden = false
-            }
+            self.label.textColor = isSelected ? UIConfig.selectedTextColor : UIConfig.normalTextColor
+            self.contentView.backgroundColor = isSelected ? UIConfig.cellSelectedColor : UIConfig.backgroundColor
+            self.line.isHidden = !isSelected
         }
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUpView()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -50,14 +44,14 @@ class DayCell: UICollectionViewCell {
     }
     
     private func setUpView(){
-        addSubview(label)
-        addSubview(line)
+        contentView.addSubview(line)
+        contentView.addSubview(label)
+        label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         
-        label.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        
-        line.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        line.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        line.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        line.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        line.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        line.heightAnchor.constraint(equalToConstant: 2).isActive = true
     }
 }

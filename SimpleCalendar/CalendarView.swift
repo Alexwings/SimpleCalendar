@@ -34,7 +34,6 @@ class CalendarView: BaseView {
     let grid: DayGridView = DayGridView(frame: .zero)
     
     override func setupViews() {
-        backgroundColor = UIConfig.backgroundColor
         
         addSubview(topBanner)
         topBanner.topAnchor.constraint(equalTo: topAnchor).isActive = true

@@ -10,24 +10,22 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    weak var viewModel: CalendarViewModel?
+    var viewModel: CalendarViewModel?
     
-    lazy var calendar: CalendarView = { [unowned self] in
-        let c = CalendarView()
-        if let vm = self.viewModel as? UICollectionViewDelegate {
-            c.grid.delegate = vm
-        }
-        return c
-    }()
+    var calendar: CalendarView = CalendarView(frame: .zero)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel = CalendarViewModel(withController: self)
-        _ = self.calendar
+        self.calendar.grid.delegate = viewModel
     }
     override func viewDidAppear(_ animated: Bool) {
-        calendar.frame = CGRect(x: 0.0, y: topLayoutGuide.length, width: view.bounds.width, height: UIConfig.mainFrameHeight)
         view.addSubview(calendar)
+        calendar.translatesAutoresizingMaskIntoConstraints = false
+        calendar.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
+        calendar.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor).isActive = true
+        calendar.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor).isActive = true
+        calendar.heightAnchor.constraint(equalToConstant: UIConfig.mainFrameHeight).isActive = true
         super.viewDidAppear(animated)
     }
 

@@ -12,9 +12,13 @@ class DayGridView: BaseView {
     
     static let cellIdentifier = "dayGridIdetifier"
     
-    weak var delegate: UICollectionViewDelegate & UICollectionViewDataSource & UICollectionViewDelegateFlowLayout? {
-        didSet {
-            self.collectionView.delegate = delegate
+    var delegate: (UICollectionViewDataSource & UICollectionViewDelegate & UICollectionViewDelegateFlowLayout)? {
+        set {
+            self.collectionView.dataSource = newValue
+            self.collectionView.delegate = newValue
+        }
+        get {
+            return self.collectionView.delegate as? (UICollectionViewDataSource & UICollectionViewDelegate & UICollectionViewDelegateFlowLayout)
         }
     }
     
@@ -25,6 +29,8 @@ class DayGridView: BaseView {
         layout.minimumLineSpacing = 0
         let cl = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cl.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        cl.bounces = false
+        cl.allowsMultipleSelection = true
         cl.register(DayCell.self, forCellWithReuseIdentifier: DayGridView.cellIdentifier)
         cl.translatesAutoresizingMaskIntoConstraints = false
         return cl
@@ -32,7 +38,7 @@ class DayGridView: BaseView {
     
     override func setupViews() {
         super.setupViews()
-        collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundColor = UIConfig.backgroundColor
         addSubview(collectionView)
         collectionView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
