@@ -27,9 +27,8 @@ class WeekBannerView: BaseView {
     }()
     
     override func setupViews() {
-        
+        super.setupViews()
         backgroundColor = UIConfig.weekBannerColor
-        translatesAutoresizingMaskIntoConstraints = false
         
         let stack = UIStackView(arrangedSubviews: labels)
         stack.axis = .horizontal

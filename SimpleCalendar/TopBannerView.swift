@@ -34,7 +34,7 @@ class TopBannerView: BaseView {
     }()
     
     override func setupViews() {
-        translatesAutoresizingMaskIntoConstraints = false
+        super.setupViews()
         backgroundColor = UIConfig.topBannerBackgroundColor
         addSubview(prevMonthButton)
         addSubview(topBannerLabel)

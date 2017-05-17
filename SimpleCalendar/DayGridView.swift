@@ -10,23 +10,34 @@ import UIKit
 
 class DayGridView: BaseView {
     
-    let cellIdentifier = "dayGridIdetifier"
+    static let cellIdentifier = "dayGridIdetifier"
     
     weak var delegate: UICollectionViewDelegate? {
         didSet {
             self.collectionView.delegate = delegate
+            if let datasource = delegate as? UICollectionViewDataSource {
+                self.collectionView.dataSource = datasource
+            } else {
+                fatalError("collectionView delegate has to conform to UICollectionViewDataSource protocol")
+            }
         }
     }
     
     lazy var collectionView: UICollectionView = { [unowned self] in
         let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
         let cl = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cl.register(DayCell.self, forCellWithReuseIdentifier: self.cellIdentifier)
+        cl.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        cl.register(DayCell.self, forCellWithReuseIdentifier: DayGridView.cellIdentifier)
+        cl.translatesAutoresizingMaskIntoConstraints = false
         return cl
     }()
     
     override func setupViews() {
-        backgroundColor = UIColor.white
+        super.setupViews()
+        collectionView.backgroundColor = UIColor.white
         addSubview(collectionView)
         collectionView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true

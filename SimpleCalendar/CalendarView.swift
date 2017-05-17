@@ -20,7 +20,9 @@ class BaseView: UIView {
         setupViews()
     }
  
-    func setupViews() {}
+    func setupViews() {
+        translatesAutoresizingMaskIntoConstraints = false
+    }
 }
 
 class CalendarView: BaseView {
@@ -29,8 +31,7 @@ class CalendarView: BaseView {
     
     let weekdayBanner: WeekBannerView = WeekBannerView(frame: .zero)
     
-    let grid: DayGridView
-    
+    let grid: DayGridView = DayGridView(frame: .zero)
     
     override func setupViews() {
         backgroundColor = UIConfig.backgroundColor
@@ -46,6 +47,12 @@ class CalendarView: BaseView {
         weekdayBanner.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         weekdayBanner.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         weekdayBanner.heightAnchor.constraint(equalToConstant: UIConfig.weekdayBannerHeight).isActive = true
+        
+        addSubview(grid)
+        grid.topAnchor.constraint(equalTo: weekdayBanner.bottomAnchor).isActive = true
+        grid.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        grid.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        grid.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
     
 }
