@@ -12,14 +12,9 @@ class DayGridView: BaseView {
     
     static let cellIdentifier = "dayGridIdetifier"
     
-    weak var delegate: UICollectionViewDelegate? {
+    weak var delegate: UICollectionViewDelegate & UICollectionViewDataSource & UICollectionViewDelegateFlowLayout? {
         didSet {
             self.collectionView.delegate = delegate
-            if let datasource = delegate as? UICollectionViewDataSource {
-                self.collectionView.dataSource = datasource
-            } else {
-                fatalError("collectionView delegate has to conform to UICollectionViewDataSource protocol")
-            }
         }
     }
     
