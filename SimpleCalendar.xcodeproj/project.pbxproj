@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7D3A4DBF1ECE00F10054BE4A /* DateRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3A4DBE1ECE00F10054BE4A /* DateRange.swift */; };
-		7D3A4DC71ECE185A0054BE4A /* SimpleCalendarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3A4DC61ECE185A0054BE4A /* SimpleCalendarTests.swift */; };
+		7D3A4DCF1ECE1E0D0054BE4A /* ModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3A4DCE1ECE1E0D0054BE4A /* ModelTest.swift */; };
 		7DD3283F1ECBB9F0001EC779 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD3283E1ECBB9F0001EC779 /* CalendarViewModel.swift */; };
 		7DD328411ECBC3D0001EC779 /* Day.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD328401ECBC3D0001EC779 /* Day.swift */; };
 		7DE47ECF1EBCE670004B51DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE47ECE1EBCE670004B51DB /* AppDelegate.swift */; };
@@ -36,8 +36,8 @@
 /* Begin PBXFileReference section */
 		7D3A4DBE1ECE00F10054BE4A /* DateRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateRange.swift; sourceTree = "<group>"; };
 		7D3A4DC41ECE185A0054BE4A /* SimpleCalendarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleCalendarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7D3A4DC61ECE185A0054BE4A /* SimpleCalendarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCalendarTests.swift; sourceTree = "<group>"; };
 		7D3A4DC81ECE185A0054BE4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7D3A4DCE1ECE1E0D0054BE4A /* ModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelTest.swift; sourceTree = "<group>"; };
 		7DD3283E1ECBB9F0001EC779 /* CalendarViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		7DD328401ECBC3D0001EC779 /* Day.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day.swift; sourceTree = "<group>"; };
 		7DE47ECB1EBCE670004B51DB /* SimpleCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,7 +75,7 @@
 		7D3A4DC51ECE185A0054BE4A /* SimpleCalendarTests */ = {
 			isa = PBXGroup;
 			children = (
-				7D3A4DC61ECE185A0054BE4A /* SimpleCalendarTests.swift */,
+				7D3A4DCE1ECE1E0D0054BE4A /* ModelTest.swift */,
 				7D3A4DC81ECE185A0054BE4A /* Info.plist */,
 			);
 			path = SimpleCalendarTests;
@@ -240,7 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D3A4DC71ECE185A0054BE4A /* SimpleCalendarTests.swift in Sources */,
+				7D3A4DCF1ECE1E0D0054BE4A /* ModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
