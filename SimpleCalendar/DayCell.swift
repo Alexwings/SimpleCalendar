@@ -9,6 +9,14 @@
 import UIKit
 
 class DayCell: UICollectionViewCell {
+    
+    var day: Day? {
+        didSet {
+            if let d = day {
+                label.text = String(d.day)
+            }
+        }
+    }
     let label: UILabel = {
         let l = UILabel()
         l.text = "01"

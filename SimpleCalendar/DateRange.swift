@@ -8,11 +8,35 @@
 
 import Foundation
 
-class DateRange {
+class DateRange: NSObject{
     
     //MARK: properties
-    var start: Day?
-    var end: Day?
+    var start: Day? {
+        didSet {
+            if let start = start, let end = end, let first = oldValue, start != first {
+                if start < first {
+                    self.daylist = findRange(from: start, to: end)
+                }else if start > end {
+                    self.daylist = findRange(from: first, to: start)
+                }else {
+                    self.daylist = findRange(from: start, to: end)
+                }
+            }
+        }
+    }
+    var end: Day? {
+        didSet {
+            if let start = start, let end = end, let last = oldValue, end != last {
+                if last > end {
+                    self.daylist = findRange(from: start, to: end)
+                }else if end < start{
+                    self.daylist = findRange(from: end, to: start)
+                }else {
+                    self.daylist = findRange(from: start, to: end)
+                }
+            }
+        }
+    }
     private var daylist: [Day]
     
     //MARK: computed properties
@@ -23,7 +47,7 @@ class DateRange {
     }
     
     //MARK: initialize methods
-    init() {
+    override init() {
         daylist = []
     }
     convenience init(startAt s: Day, endAt e: Day?){
@@ -32,19 +56,21 @@ class DateRange {
             self.daylist.append(s)
             return
         }
-        self.daylist.sort { return $0 <= $1 }
+        self.daylist = findRange(from: s, to: e)
         self.start = self.daylist.first
         self.end = self.daylist.last
     }
     
     //MARK: member methods
-    func findRange(from s: Day, to e: Day ) {
+    func findRange(from s: Day, to e: Day ) -> [Day] {
         let startDay = s <= e ? s : e
         let endDay = s >= e ? s : e
+        var res: [Day] = []
         var d: Day? = startDay
         while let cur = d, cur <= endDay {
-            daylist.append(cur)
-            d = cur.day(byAdding: .day, value: 1, fromDay: cur)
+            res.append(cur)
+            d = cur.day(byAdding: .day, value: 1)
         }
+        return res.sorted { return $0 < $1 }
     }
 }

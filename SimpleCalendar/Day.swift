@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Day {
+class Day: NSObject{
     //instance property
     let date: Date
     let year: Int
@@ -45,7 +45,7 @@ class Day {
         self.weekday = components.weekday
     }
     
-    func day(byAdding component: Calendar.Component, value: Int, fromDay: Day) -> Day? {
+    func day(byAdding component: Calendar.Component, value: Int) -> Day? {
         guard let tommorrow = Calendar.current.date(byAdding: component, value: value, to: self.date) else { return nil }
         return Day(withDate: tommorrow)
     }
