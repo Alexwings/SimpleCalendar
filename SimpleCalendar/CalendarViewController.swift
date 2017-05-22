@@ -21,6 +21,17 @@ class CalendarViewController: UIViewController {
         super.viewDidLoad()
         self.calendar.grid.delegate = self
         _ = self.viewModel
+        
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd"
+        fmt.timeZone = TimeZone.current
+        var firstDay = fmt.date(from: "1989-04-26")!
+        for _ in 0..<6 {
+            let day = Day(withDate: firstDay)
+            viewModel.currentMonth.append(day)
+            firstDay = Calendar.current.date(byAdding: .day, value: 1, to: firstDay)!
+        }
+        self.calendar.grid.collectionView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -32,7 +43,6 @@ class CalendarViewController: UIViewController {
         calendar.heightAnchor.constraint(equalToConstant: UIConfig.mainFrameHeight).isActive = true
         super.viewDidAppear(animated)
     }
-    
 }
 
 extension CalendarViewController: UICollectionViewDataSource {
@@ -41,17 +51,14 @@ extension CalendarViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //        return dayList.count
-        return UIConfig.test.count
+        return viewModel.currentMonth.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let dayCell = collectionView.dequeueReusableCell(withReuseIdentifier: DayGridView.cellIdentifier, for: indexPath)
         if let dayCell = dayCell as? DayCell {
-            //            let day = dayList[indexPath.item]
-            //            dayCell.label.text = String(day.day)
-            let testText = String(UIConfig.test[indexPath.item])
-            dayCell.label.text = testText
+            let day = viewModel.currentMonth[indexPath.item]
+            dayCell.day = day
             return dayCell
         }
         return UICollectionViewCell()
@@ -60,6 +67,46 @@ extension CalendarViewController: UICollectionViewDataSource {
 
 extension CalendarViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? DayCell, cell.isSelected else {
+            return
+        }
+        handleSelect(collectionView, forCell: cell)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? DayCell, !cell.isSelected else {
+            return
+        }
+        handleDeselected(collectionView, forCell: cell)
+    }
+    
+    private func handleDeselected(_ collectionView: UICollectionView, forCell cell: DayCell) {
+        guard let day = cell.day else { return }
+        
+    }
+    
+    private func handleSelect(_ collectionView: UICollectionView, forCell cell: DayCell) {
+        guard let day = cell.day else { return }
+//        if let day = cell.day {
+//            if viewModel.startDay == nil {
+//                viewModel.startDay = day
+//            }else if viewModel.endDay == nil {
+//                viewModel.endDay = day
+//            }
+//            if let s = viewModel.startDay, let e = viewModel.endDay {
+//                if day < s {
+//                    viewModel.startDay = day
+//                }else if day > e{
+//                    viewModel.endDay = day
+//                }
+//            }
+//            let indices: [IndexPath] = viewModel.findSelected().map({ (index) -> IndexPath in
+//                return IndexPath(item: index, section: 0)
+//            })
+//            for ind in indices {
+//                collectionView.selectItem(at: ind, animated: false, scrollPosition: .centeredHorizontally)
+//            }
+//        }
     }
 }
 
