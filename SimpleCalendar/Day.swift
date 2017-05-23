@@ -60,7 +60,13 @@ extension Day: Comparable{
     static func ==(lhs: Day, rhs: Day) -> Bool {
         return (lhs.year == rhs.year) && (lhs.month == rhs.month) && (lhs.day == rhs.day)
     }
-    
+    /*Description: left hand side day is not the same day with the right hand side day
+     *parameters:
+     *return: true if left and right are not the same day
+     */
+    static func !=(lhs: Day, rhs: Day) -> Bool {
+        return !(lhs == rhs)
+    }
     /*Description: left hand side day is earlier then the right hand side day
      *parameters:
      *return: true if left is earlier then right
