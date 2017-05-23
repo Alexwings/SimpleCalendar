@@ -39,7 +39,7 @@ class CalendarViewModel: NSObject {
         super.init()
         self.controller = controller
     }
-    
+    //select the date range according to previous selected range
     func select(day: Day?, completionHandler: @escaping ([Int]) -> Void) {
         guard let day = day else { return }
         if selectedRange.range.isEmpty, let s = startDay {
@@ -59,7 +59,7 @@ class CalendarViewModel: NSObject {
             completionHandler(indices)
         }
     }
-    
+    //deselect the date range according to previous selected range, will always deselect the given day to the end of the selected range except the given day is the start day"
     func deselect(day: Day?, completionHandler: @escaping ([Int]) -> Void) {
         guard let day = day else { return }
         if selectedRange.remove(day: day) {
