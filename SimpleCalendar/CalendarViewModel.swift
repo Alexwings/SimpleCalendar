@@ -49,11 +49,21 @@ class CalendarViewModel: NSObject {
             if day <= e { startDay = day }
             else { startDay = e; endDay = day }
         }else if let s = startDay, let _ = endDay {
-            if day < s { startDay = day }
+            if day < s { endDay = s; startDay = day}
             else { endDay = day }
+        }else {
+            startDay = day
         }
         let indices = findSelected()
         if !indices.isEmpty{
+            completionHandler(indices)
+        }
+    }
+    
+    func deselect(day: Day?, completionHandler: @escaping ([Int]) -> Void) {
+        guard let day = day else { return }
+        if selectedRange.remove(day: day) {
+            let indices = findSelected()
             completionHandler(indices)
         }
     }
@@ -71,12 +81,6 @@ class CalendarViewModel: NSObject {
             }
         }
         return []
-    }
-    private func findDeselected(toDay day: Day) -> [Int] {
-        guard let start = startDay, let end = endDay else { return [] }
-        guard start <= day && end >= day else { return [] }
-        guard let index = currentMonth.index(of: day) else { return [] }
-        return [Int](0...index)
     }
 }
 

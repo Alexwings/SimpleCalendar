@@ -73,4 +73,15 @@ class DateRange: NSObject{
         }
         return res.sorted { return $0 < $1 }
     }
+    
+    func remove(day: Day) -> Bool {
+        guard daylist.contains(day), let index = daylist.index(of: day) else { return false }
+        guard day > daylist[daylist.startIndex] else {
+            start = daylist[daylist.index(after: daylist.startIndex)]
+            return true
+        }
+        let prevDayIndex = daylist.index(before: index)
+        end = daylist[prevDayIndex]
+        return true
+    }
 }

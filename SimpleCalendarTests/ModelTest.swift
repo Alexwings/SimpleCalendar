@@ -94,13 +94,14 @@ class ModelTest: XCTestCase {
     }
     
     func testComparable() {
-        let lhs = formatter.date(from: "2017:01:01")!
-        let rhs_1 = formatter.date(from: "2016:01:01")!
-        let rhs_2 = formatter.date(from: "2017:02:01")!
-        let rhs_3 = formatter.date(from: "2017:01:03")!
+        let lhs = Day(withDate: formatter.date(from: "2017:01:01")!)
+        let rhs_1 = Day(withDate: formatter.date(from: "2016:01:01")!)
+        let rhs_2 = Day(withDate: formatter.date(from: "2017:02:01")!)
+        let rhs_3 = Day(withDate: formatter.date(from: "2017:01:03")!)
         
         XCTAssertTrue(lhs == lhs)
         XCTAssertFalse(lhs == rhs_1)
+        XCTAssertFalse(lhs != lhs)
         XCTAssertTrue(lhs > rhs_1)
         XCTAssertTrue(lhs < rhs_2)
         XCTAssertTrue(lhs < rhs_3)
@@ -108,6 +109,16 @@ class ModelTest: XCTestCase {
         XCTAssertTrue(rhs_2 >= lhs)
         XCTAssertTrue(lhs <= lhs)
         XCTAssertTrue(lhs >= lhs)
+    }
+    
+    func findSelected() {
+        let vm = CalendarViewModel(withController: UIViewController())
+        let vm =
+        let start_1 = Day(withDate: formatter.date(from: "1989:04:26")!)
+        let start_2 = Day(withDate: formatter.date(from: "1989:03:26")!)
+        let end_1 = Day(withDate: formatter.date(from: "1989:04:30")!)
+        let end_2 = Day(withDate: formatter.date(from: "1989:05:26")!)
+        
     }
     
 }
