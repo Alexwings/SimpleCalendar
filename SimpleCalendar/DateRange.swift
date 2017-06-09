@@ -13,27 +13,17 @@ class DateRange: NSObject{
     //MARK: properties
     var start: Day? {
         didSet {
-            if let start = start, let end = end, let first = oldValue, start != first {
-                if start < first {
-                    self.daylist = findRange(from: start, to: end)
-                }else if start > end {
-                    self.daylist = findRange(from: first, to: start)
-                }else {
-                    self.daylist = findRange(from: start, to: end)
-                }
+            if let start = start{
+                guard let end = self.end, start <= end else { self.end = start; return }
+                self.daylist = self.findRange(from: start, to: end)
             }
         }
     }
     var end: Day? {
         didSet {
-            if let start = start, let end = end, let last = oldValue, end != last {
-                if last > end {
-                    self.daylist = findRange(from: start, to: end)
-                }else if end < start{
-                    self.daylist = findRange(from: end, to: start)
-                }else {
-                    self.daylist = findRange(from: start, to: end)
-                }
+            if let end = end {
+                guard let start = self.start, start <= end else { self.start = end; return }
+                self.daylist = self.findRange(from: start, to: end)
             }
         }
     }

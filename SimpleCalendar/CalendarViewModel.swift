@@ -14,6 +14,7 @@ class CalendarViewModel: NSObject {
     var currentMonth: [Day] = []
     
     private var selectedRange: DateRange = DateRange()
+    private let queue = DispatchQueue(label: "CalendarViewModelQueue")
     
     var startDay: Day? {
         get {
@@ -56,15 +57,23 @@ class CalendarViewModel: NSObject {
         }
         let indices = findSelected()
         if !indices.isEmpty{
-            completionHandler(indices)
+            DispatchQueue.main.async {
+                completionHandler(indices)
+            }
         }
     }
     //deselect the date range according to previous selected range, will always deselect the given day to the end of the selected range except the given day is the start day"
     func deselect(day: Day?, completionHandler: @escaping ([Int]) -> Void) {
         guard let day = day else { return }
+        let originSelected = findSelected()
         if selectedRange.remove(day: day) {
-            let indices = findSelected()
-            completionHandler(indices)
+            let newSelected = findSelected()
+            let needsToDelectedIndices = originSelected.filter({ (index) -> Bool in
+                return !newSelected.contains(index)
+            })
+            DispatchQueue.main.async {
+                completionHandler(needsToDelectedIndices)
+            }
         }
     }
     //find the selected indices in current month

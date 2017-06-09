@@ -82,31 +82,40 @@ extension CalendarViewController: UICollectionViewDelegate {
     
     private func handleDeselected(_ collectionView: UICollectionView, forCell cell: DayCell) {
         guard let day = cell.day else { return }
+        /*
+         1.Get current day
+         2.update selectedRange in ViewModel
+         */
+        guard let end = self.viewModel.endDay, day <= end else { return }
+        self.viewModel.deselect(day: day) { (indices) in
+            let selectedIndexPath = indices.map{ IndexPath(item: $0, section: 0)}
+            selectedIndexPath.forEach({ (ip) in
+                guard let cell = collectionView.cellForItem(at: ip) else { return }
+                if cell.isSelected {
+                    collectionView.deselectItem(at: ip, animated: false)
+                }
+            })
+        }
         
     }
     
     private func handleSelect(_ collectionView: UICollectionView, forCell cell: DayCell) {
         guard let day = cell.day else { return }
-//        if let day = cell.day {
-//            if viewModel.startDay == nil {
-//                viewModel.startDay = day
-//            }else if viewModel.endDay == nil {
-//                viewModel.endDay = day
-//            }
-//            if let s = viewModel.startDay, let e = viewModel.endDay {
-//                if day < s {
-//                    viewModel.startDay = day
-//                }else if day > e{
-//                    viewModel.endDay = day
-//                }
-//            }
-//            let indices: [IndexPath] = viewModel.findSelected().map({ (index) -> IndexPath in
-//                return IndexPath(item: index, section: 0)
-//            })
-//            for ind in indices {
-//                collectionView.selectItem(at: ind, animated: false, scrollPosition: .centeredHorizontally)
-//            }
-//        }
+        /*
+            1.Get current day
+            2.update selectedRange in ViewModel
+        */
+        self.viewModel.select(day: day) { (indices) in
+            let selectedIndexPaths = indices.map({ (index) -> IndexPath in
+                return IndexPath(item: index, section: 0)
+            })
+            for ip in selectedIndexPaths {
+                guard let cell = collectionView.cellForItem(at: ip) else { continue }
+                if !cell.isSelected {
+                    collectionView.selectItem(at: ip, animated: false, scrollPosition: .left)
+                }
+            }
+        }
     }
 }
 
