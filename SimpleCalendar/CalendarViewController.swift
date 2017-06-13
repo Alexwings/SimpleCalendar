@@ -81,32 +81,46 @@ extension CalendarViewController: UICollectionViewDelegate {
     }
     
     private func handleDeselected(_ collectionView: UICollectionView, forCell cell: DayCell) {
-        guard let day = cell.day else { return }
-        /*
-         1.Get current day
-         2.update selectedRange in ViewModel
-         */
-        guard let end = self.viewModel.endDay, day <= end else { return }
-        self.viewModel.deselect(day: day) { (indices) in
-            let selectedIndexPath = indices.map{ IndexPath(item: $0, section: 0)}
-            selectedIndexPath.forEach({ (ip) in
+        self.viewModel.deselect(day: cell.day) { [unowned self](unselectedIndices) in
+            guard !unselectedIndices.isEmpty else {
+                let alert = UIAlertController(title: "No Day Selected", message: "No day assigned for this cell, please select another day", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            let filteredIndices = unselectedIndices.filter({ (i) -> Bool in
+                return i != -1
+            })
+            let unselectedIndexPaths = filteredIndices.map({ (index) -> IndexPath in
+                return IndexPath(item: index, section: 0)
+            })
+            for ip in unselectedIndexPaths {
                 guard let cell = collectionView.cellForItem(at: ip) else { return }
                 if cell.isSelected {
                     collectionView.deselectItem(at: ip, animated: false)
                 }
-            })
+            }
         }
-        
     }
     
     private func handleSelect(_ collectionView: UICollectionView, forCell cell: DayCell) {
-        guard let day = cell.day else { return }
         /*
             1.Get current day
             2.update selectedRange in ViewModel
         */
-        self.viewModel.select(day: day) { (indices) in
-            let selectedIndexPaths = indices.map({ (index) -> IndexPath in
+        self.viewModel.select(day: cell.day) { [unowned self](indices) in
+            guard !indices.isEmpty else {
+                let alert = UIAlertController(title: "No Day Selected", message: "No day assigned for this cell, please select another day", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            let filteredIndices = indices.filter({ (i) -> Bool in
+                return i != -1
+            })
+            let selectedIndexPaths = filteredIndices.map({ (index) -> IndexPath in
                 return IndexPath(item: index, section: 0)
             })
             for ip in selectedIndexPaths {

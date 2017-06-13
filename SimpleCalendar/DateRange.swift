@@ -13,17 +13,15 @@ class DateRange: NSObject{
     //MARK: properties
     var start: Day? {
         didSet {
-            if let start = start{
-                guard let end = self.end, start <= end else { self.end = start; return }
-                self.daylist = self.findRange(from: start, to: end)
+            if start != oldValue{
+                self.updateRange()
             }
         }
     }
     var end: Day? {
         didSet {
-            if let end = end {
-                guard let start = self.start, start <= end else { self.start = end; return }
-                self.daylist = self.findRange(from: start, to: end)
+            if end != oldValue {
+                self.updateRange()
             }
         }
     }
@@ -51,7 +49,24 @@ class DateRange: NSObject{
         self.end = self.daylist.last
     }
     
+    private func updateRange() {
+        guard let start = self.start else {
+            clearRange()
+            return
+        }
+        if let end = self.end {
+            daylist = findRange(from: start, to: end)
+        }else {
+            daylist = findRange(from: start, to: start)
+        }
+    }
+    
     //MARK: member methods
+    func clearRange() {
+        daylist.removeAll()
+        self.end = nil
+        self.start = nil
+    }
     func findRange(from s: Day, to e: Day ) -> [Day] {
         let startDay = s <= e ? s : e
         let endDay = s >= e ? s : e
@@ -62,16 +77,5 @@ class DateRange: NSObject{
             d = cur.day(byAdding: .day, value: 1)
         }
         return res.sorted { return $0 < $1 }
-    }
-    
-    func remove(day: Day) -> Bool {
-        guard daylist.contains(day), let index = daylist.index(of: day) else { return false }
-        guard day > daylist[daylist.startIndex] else {
-            start = daylist[daylist.index(after: daylist.startIndex)]
-            return true
-        }
-        let prevDayIndex = daylist.index(before: index)
-        end = daylist[prevDayIndex]
-        return true
     }
 }
