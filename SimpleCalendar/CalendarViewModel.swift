@@ -34,10 +34,10 @@ class CalendarViewModel: NSObject {
         self.controller = controller
     }
     //select the date range according to previous selected range
-    func select(day: Day?, completionHandler: @escaping ([Int]) -> Void) {
+    func select(day: Day?, completionHandler: @escaping ([Int]?) -> Void) {
         guard let day = day else {
             DispatchQueue.main.async {
-                completionHandler([])
+                completionHandler(nil)
             }
             return
         }
@@ -68,12 +68,39 @@ class CalendarViewModel: NSObject {
         }
     }
     //deselect the date range according to previous selected range, will always deselect the given day to the end of the selected range except the given day is the start day"
-    func deselect(day: Day?, completionHandler: @escaping ([Int]) -> Void) {
-        guard let day = day else {
+    func deselect(day: Day?, completionHandler: @escaping ([Int]?) -> Void) {
+        guard let day = day, let start = startDay, day >= start else {
             DispatchQueue.main.async {
-                completionHandler([])
+                completionHandler(nil)
             }
             return
+        }
+        //cache the original selected range
+        //get the index of the unselected day in original range
+        let selected = selectedRange.range
+        let curIndex = selected.index(where: { $0 == day }) ?? selected.endIndex
+        //if the unselected day is start date of the original range, clear the original range
+        //else set the end of selected range to the day before the unselected day
+        if let start = startDay, day == start {
+            selectedRange.start = nil
+            selectedRange.end = nil
+        }else {
+            let selectedEndIndex = selected.index(before: curIndex)
+            selectedRange.end = selected[selectedEndIndex]
+        }
+        //find the unselected days after alter the end of the selected range
+        var unselected: [Day] = []
+        for (i, d) in selected.enumerated() {
+            if i > curIndex {
+                unselected.append(d)
+            }
+        }
+        //transform the unselected days array to array of the index of those unselected days.
+        let indices: [Int] = unselected.map { [unowned self](d) -> Int in
+            return self.currentMonth.index(where: { $0 == d }) ?? -1
+        }
+        DispatchQueue.main.async {
+            completionHandler(indices)
         }
     }
 }

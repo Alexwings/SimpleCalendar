@@ -82,7 +82,7 @@ extension CalendarViewController: UICollectionViewDelegate {
     
     private func handleDeselected(_ collectionView: UICollectionView, forCell cell: DayCell) {
         self.viewModel.deselect(day: cell.day) { [unowned self](unselectedIndices) in
-            guard !unselectedIndices.isEmpty else {
+            guard let unselectedIndices = unselectedIndices else {
                 let alert = UIAlertController(title: "No Day Selected", message: "No day assigned for this cell, please select another day", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                 alert.addAction(okAction)
@@ -110,7 +110,7 @@ extension CalendarViewController: UICollectionViewDelegate {
             2.update selectedRange in ViewModel
         */
         self.viewModel.select(day: cell.day) { [unowned self](indices) in
-            guard !indices.isEmpty else {
+            guard let indices = indices else {
                 let alert = UIAlertController(title: "No Day Selected", message: "No day assigned for this cell, please select another day", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                 alert.addAction(okAction)
