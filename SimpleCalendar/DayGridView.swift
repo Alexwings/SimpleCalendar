@@ -11,6 +11,7 @@ import UIKit
 class DayGridView: BaseView {
     
     static let cellIdentifier = "dayGridIdetifier"
+    static let emptyCellIdentifier = "emptyDayIdentifier"
     
     var delegate: (UICollectionViewDataSource & UICollectionViewDelegate & UICollectionViewDelegateFlowLayout)? {
         set {
@@ -32,6 +33,7 @@ class DayGridView: BaseView {
         cl.bounces = false
         cl.allowsMultipleSelection = true
         cl.register(DayCell.self, forCellWithReuseIdentifier: DayGridView.cellIdentifier)
+        cl.register(UICollectionViewCell.self, forCellWithReuseIdentifier: DayGridView.emptyCellIdentifier)
         cl.translatesAutoresizingMaskIntoConstraints = false
         return cl
     }()

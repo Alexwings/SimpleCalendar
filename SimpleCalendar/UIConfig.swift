@@ -31,6 +31,26 @@ enum Weekdays: String {
             return .undefined
         }
     }
+    func number() -> Int {
+        switch self {
+        case .sunday:
+            return 1
+        case .monday:
+            return 2
+        case .tuesday:
+            return 3
+        case .wednesday:
+            return 4
+        case .thursday:
+            return 5
+        case .friday:
+            return 6
+        case .saturday:
+            return 7
+        case .undefined:
+            return -1
+        }
+    }
 }
 
 class UIConfig {
@@ -57,8 +77,6 @@ class UIConfig {
     static let topBannerHeight: CGFloat = 40
     
     static let topBannerButtonWidth: CGFloat = 50
-    
-    static var mainFrameHeight: CGFloat = (UIScreen.main.bounds.size.height * 5) / 12
     
     static let weekdayBannerHeight: CGFloat = 30
     static let windowWidth: CGFloat = UIScreen.main.bounds.size.width

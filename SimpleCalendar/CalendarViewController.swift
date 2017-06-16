@@ -16,21 +16,19 @@ class CalendarViewController: UIViewController {
     }()
     
     var calendar: CalendarView = CalendarView(frame: .zero)
+    
+    var frameHeight: CGFloat = 0 {
+        didSet {
+            self.calendar.setNeedsLayout()
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.calendar.grid.delegate = self
         _ = self.viewModel
-        
-        let fmt = DateFormatter()
-        fmt.dateFormat = "yyyy-MM-dd"
-        fmt.timeZone = TimeZone.current
-        var firstDay = fmt.date(from: "1989-04-26")!
-        for _ in 0..<6 {
-            let day = Day(withDate: firstDay)
-            viewModel.currentMonth.append(day)
-            firstDay = Calendar.current.date(byAdding: .day, value: 1, to: firstDay)!
-        }
+        let width: Double = Double(self.calendar.bounds.size.width) / 7.0
+        frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows * width)
         self.calendar.grid.collectionView.reloadData()
     }
     
@@ -40,7 +38,7 @@ class CalendarViewController: UIViewController {
         calendar.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
         calendar.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor).isActive = true
         calendar.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor).isActive = true
-        calendar.heightAnchor.constraint(equalToConstant: UIConfig.mainFrameHeight).isActive = true
+        calendar.heightAnchor.constraint(equalToConstant: frameHeight).isActive = true
         super.viewDidAppear(animated)
     }
 }
@@ -51,17 +49,27 @@ extension CalendarViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.currentMonth.count
+        switch viewModel.startWeekDay {
+        case .undefined:
+            return viewModel.currentMonth.count
+        default:
+            return viewModel.currentMonth.count + viewModel.startWeekDay.number() - 1
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let dayCell = collectionView.dequeueReusableCell(withReuseIdentifier: DayGridView.cellIdentifier, for: indexPath)
-        if let dayCell = dayCell as? DayCell {
-            let day = viewModel.currentMonth[indexPath.item]
-            dayCell.day = day
-            return dayCell
+        let startIndex = viewModel.startWeekDay.number() - 1
+        let actuallIndex = indexPath.item - startIndex
+        var dayCell = collectionView.dequeueReusableCell(withReuseIdentifier: DayGridView.emptyCellIdentifier, for: indexPath)
+        if indexPath.item >= startIndex {
+            dayCell = collectionView.dequeueReusableCell(withReuseIdentifier: DayGridView.cellIdentifier, for: indexPath)
+            if let dayCell = dayCell as? DayCell {
+                let day = viewModel.currentMonth[actuallIndex]
+                dayCell.day = day
+                return dayCell
+            }
         }
-        return UICollectionViewCell()
+        return dayCell
     }
 }
 

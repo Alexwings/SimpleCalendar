@@ -11,7 +11,25 @@ import UIKit
 
 class CalendarViewModel: NSObject {
     
-    var currentMonth: [Day] = []
+    
+    var currentMonth: [Day] = [] {
+        didSet {
+            if !currentMonth.isEmpty, let first = currentMonth.first {
+                startWeekDay = first.weekday
+            }
+        }
+    }
+    
+    var startWeekDay: Weekdays = Weekdays.undefined {
+        didSet {
+            if startWeekDay != .undefined {
+                let num: Double = Double(currentMonth.count + startWeekDay.number()) / 7.0
+                numberOfRows = ceil(num)
+            }
+        }
+    }// starting position
+
+    var numberOfRows: Double = 0.0;
     
     private var selectedRange: DateRange = DateRange()
     
@@ -32,6 +50,8 @@ class CalendarViewModel: NSObject {
     init(withController controller: UIViewController) {
         super.init()
         self.controller = controller
+        let currentDate = Date()
+        self.update(withDate: currentDate)
     }
     //select the date range according to previous selected range
     func select(day: Day?, completionHandler: @escaping ([Int]?) -> Void) {
@@ -61,7 +81,8 @@ class CalendarViewModel: NSObject {
         //find the index of the selected days in current month.
         let selected = self.selectedRange.range
         let indices = selected.map {[unowned self] (day) -> Int in
-            return self.currentMonth.index(where: { $0 == day}) ?? -1
+            let index = self.currentMonth.index(where: { $0 == day}) ?? -1
+            return (index != -1 ? index + self.startWeekDay.number() - 1 : index)
         }
         DispatchQueue.main.async {
             completionHandler(indices)
@@ -97,11 +118,33 @@ class CalendarViewModel: NSObject {
         }
         //transform the unselected days array to array of the index of those unselected days.
         let indices: [Int] = unselected.map { [unowned self](d) -> Int in
-            return self.currentMonth.index(where: { $0 == d }) ?? -1
+            let index = self.currentMonth.index(where: { $0 == d}) ?? -1
+            let newIndex = (index == -1) ? index : (index + self.startWeekDay.number() - 1)
+            return newIndex
         }
         DispatchQueue.main.async {
             completionHandler(indices)
         }
+    }
+}
+
+extension CalendarViewModel {
+    fileprivate func update(withDate date: Date) {
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: date)
+        let month = calendar.component(.month, from: date)
+        guard let rawMonthRange = calendar.range(of: .day, in: .month, for: date) else { return }
+        let monthRange = rawMonthRange.lowerBound..<rawMonthRange.upperBound
+        currentMonth = monthRange.map({ (dayNumber) -> Day in
+            var components = DateComponents()
+            components.year = year
+            components.month = month
+            components.day = dayNumber
+            let currentDate = calendar.date(from: components)
+            return Day(withDate: currentDate ?? Date(timeIntervalSince1970: -1))
+        }).filter({ (day) -> Bool in
+            return day != Day(withDate: Date(timeIntervalSince1970: -1))
+        })
     }
 }
 
