@@ -20,6 +20,14 @@ class CalendarViewModel: NSObject {
         }
     }
     
+    var monthString: String {
+        get {
+            guard let firstDay = currentMonth.first else { return ""} 
+            let month = Utilities.formatter.monthSymbols[firstDay.month - 1]
+            return month + ", \(firstDay.year)"
+        }
+    }
+    
     var startWeekDay: Weekdays = Weekdays.undefined {
         didSet {
             if startWeekDay != .undefined {

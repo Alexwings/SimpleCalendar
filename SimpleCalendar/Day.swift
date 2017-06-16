@@ -17,11 +17,6 @@ class Day: NSObject{
     let week: Int // week of the year
     let weekday: Weekdays
     
-    //MARK: class utilities 
-    //TODO: Date formatter and class method to convert date to formatted string
-//    static let fomatter: DateFormatter = {
-//    }()
-    
     /*Description: class methods to help extract date components needed in Day class from given Date object
      *parameters:
      *  fromDate: the Date object want to be converted

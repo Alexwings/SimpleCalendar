@@ -88,6 +88,10 @@ class UIConfig {
     }
 }
 
+class Utilities {
+    static var formatter = DateFormatter()
+}
+
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
         let r = red <= 255 ? red : 255

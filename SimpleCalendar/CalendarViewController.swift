@@ -17,9 +17,15 @@ class CalendarViewController: UIViewController {
     
     var calendar: CalendarView = CalendarView(frame: .zero)
     
+    var calendarHeightConstraint: NSLayoutConstraint?
+    
     var frameHeight: CGFloat = 0 {
         didSet {
-            self.calendar.setNeedsLayout()
+            if let calHeight = calendarHeightConstraint {
+                calHeight.isActive = false
+                calHeight.constant = frameHeight
+                calHeight.isActive = true
+            }
         }
     }
 
@@ -27,18 +33,23 @@ class CalendarViewController: UIViewController {
         super.viewDidLoad()
         self.calendar.grid.delegate = self
         _ = self.viewModel
-        let width: Double = Double(self.calendar.bounds.size.width) / 7.0
-        frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows * width)
+        self.calendar.topBanner.topBannerLabel.text = self.viewModel.monthString
         self.calendar.grid.collectionView.reloadData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         view.addSubview(calendar)
         calendar.translatesAutoresizingMaskIntoConstraints = false
         calendar.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
         calendar.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor).isActive = true
         calendar.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor).isActive = true
-        calendar.heightAnchor.constraint(equalToConstant: frameHeight).isActive = true
+        calendarHeightConstraint = calendar.heightAnchor.constraint(equalToConstant: frameHeight)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        let width: CGFloat = CGFloat(self.calendar.bounds.size.width) / 7.0
+        frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows) * width
         super.viewDidAppear(animated)
     }
 }
