@@ -10,7 +10,7 @@ import UIKit
 
 class CalendarViewController: UIViewController {
     
-    lazy var viewModel: CalendarViewModel = {
+    fileprivate lazy var viewModel: CalendarViewModel = {
         let vm = CalendarViewModel(withController: self)
         return vm
     }()
@@ -28,13 +28,27 @@ class CalendarViewController: UIViewController {
             }
         }
     }
+    
+    var selected: [Day] {
+        get {
+            return viewModel.range
+        }
+    }
+    
+    var currentMonth: Int? {
+        get {
+            return viewModel.currentMonth.first?.month
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.calendar.grid.delegate = self
         _ = self.viewModel
-        self.calendar.topBanner.topBannerLabel.text = self.viewModel.monthString
-        self.calendar.grid.collectionView.reloadData()
+        
+        calendar.topBanner.nextMonthButton.addTarget(self, action: #selector(nextMonthButtonClicked(_:)), for: .touchUpInside)
+        calendar.topBanner.prevMonthButton.addTarget(self, action: #selector(previousMonthButtonClicked(_:)), for: .touchUpInside)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,9 +62,51 @@ class CalendarViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        let width: CGFloat = CGFloat(self.calendar.bounds.size.width) / 7.0
-        frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows) * width
+        reloadAllData()
         super.viewDidAppear(animated)
+    }
+    
+    //MARK: Action methods
+    
+    func nextMonthButtonClicked(_ sender: UIButton) {
+//        sender.tintColor = sender.isHighlighted ? UIColor.gray : UIColor.blue
+        guard let firstDayOfCurrentMonth = viewModel.currentMonth.first else { return }
+        if let firstDayOfNextMonth = firstDayOfCurrentMonth.day(byAdding: .month, value: 1) {
+            viewModel.update(withDate: firstDayOfNextMonth)
+            reloadAllData()
+            updateSelection(self.calendar.grid.collectionView)
+        }
+    }
+    
+    func previousMonthButtonClicked(_ sender: UIButton) {
+//        sender.tintColor = sender.isHighlighted ? UIColor.gray : UIColor.blue
+        guard let firstDayOfCurrentMonth = viewModel.currentMonth.first else { return }
+        if let firstDayOfPrevMonth = firstDayOfCurrentMonth.day(byAdding: .month, value: -1) {
+            viewModel.update(withDate: firstDayOfPrevMonth)
+            reloadAllData()
+            updateSelection(self.calendar.grid.collectionView)
+        }
+    }
+    private func reloadAllData() {
+        let width: CGFloat = CGFloat(self.calendar.bounds.size.width) / 7.0
+        self.calendar.topBanner.topBannerLabel.text = self.viewModel.monthString
+        self.calendar.grid.collectionView.reloadData()
+        frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows) * width
+    }
+    
+    private func updateSelection(_ collectionView: UICollectionView) {
+        guard let cMonth = currentMonth else { return }
+        let constantOffset = viewModel.startWeekDay.number()
+        let selectedInCurrentMonths = selected.filter { (day) -> Bool in
+            return day.month == cMonth
+        }.map { (day) -> IndexPath? in
+            guard let index = self.viewModel.currentMonth.index(where: { $0 == day }) else { return nil }
+            return IndexPath(item: (index + constantOffset - 1), section: 0)
+        }
+        selectedInCurrentMonths.forEach { (ip) in
+            guard let ip = ip else { return }
+            collectionView.selectItem(at: ip, animated: false, scrollPosition: .top)
+        }
     }
 }
 
@@ -142,11 +198,9 @@ extension CalendarViewController: UICollectionViewDelegate {
             let selectedIndexPaths = filteredIndices.map({ (index) -> IndexPath in
                 return IndexPath(item: index, section: 0)
             })
+            collectionView.deselectCells(forIndexPaths: collectionView.indexPathsForSelectedItems)
             for ip in selectedIndexPaths {
-                guard let cell = collectionView.cellForItem(at: ip) else { continue }
-                if !cell.isSelected {
-                    collectionView.selectItem(at: ip, animated: false, scrollPosition: .left)
-                }
+                collectionView.selectItem(at: ip, animated: false, scrollPosition: .left)
             }
         }
     }
@@ -158,3 +212,5 @@ extension CalendarViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: width, height: width)
     }
 }
+
+

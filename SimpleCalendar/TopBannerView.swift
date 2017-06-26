@@ -12,14 +12,19 @@ class TopBannerView: BaseView {
     
     let prevMonthButton: UIButton = {
         var btn = UIButton()
-        btn.setTitle("prev", for: .normal)
+        let prevImage = UIImage(named: "back")!.withRenderingMode(.alwaysTemplate)
+        btn.setImage(prevImage, for: .normal)
+        btn.sizeToFit()
+        btn.tintColor = UIColor.blue
         UIConfig.shared.configureTopBanner(button: &btn)
         return btn
-    }()
+        }() 
     
     let nextMonthButton: UIButton = {
         var btn = UIButton()
-        btn.setTitle("next", for: .normal)
+        let nextImage = UIImage(named: "next")!.withRenderingMode(.alwaysTemplate)
+        btn.setImage(nextImage, for: .normal)
+        btn.tintColor = UIColor.blue
         UIConfig.shared.configureTopBanner(button: &btn)
         return btn
     }()

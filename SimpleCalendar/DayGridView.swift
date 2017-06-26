@@ -48,3 +48,13 @@ class DayGridView: BaseView {
         collectionView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
 }
+
+extension UICollectionView {
+    func deselectCells(forIndexPaths indexPaths: [IndexPath]?) {
+        guard let selectedIndexPaths = indexPaths else { return }
+        for ip in selectedIndexPaths {
+            guard let _ = self.cellForItem(at: ip) else { continue }
+            self.deselectItem(at: ip, animated: false)
+        }
+    }
+}

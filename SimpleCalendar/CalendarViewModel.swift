@@ -11,7 +11,7 @@ import UIKit
 
 class CalendarViewModel: NSObject {
     
-    
+    //MARK:public property
     var currentMonth: [Day] = [] {
         didSet {
             if !currentMonth.isEmpty, let first = currentMonth.first {
@@ -19,15 +19,6 @@ class CalendarViewModel: NSObject {
             }
         }
     }
-    
-    var monthString: String {
-        get {
-            guard let firstDay = currentMonth.first else { return ""} 
-            let month = Utilities.formatter.monthSymbols[firstDay.month - 1]
-            return month + ", \(firstDay.year)"
-        }
-    }
-    
     var startWeekDay: Weekdays = Weekdays.undefined {
         didSet {
             if startWeekDay != .undefined {
@@ -36,11 +27,14 @@ class CalendarViewModel: NSObject {
             }
         }
     }// starting position
-
-    var numberOfRows: Double = 0.0;
     
-    private var selectedRange: DateRange = DateRange()
-    
+    var monthString: String {
+        get {
+            guard let firstDay = currentMonth.first else { return ""} 
+            let month = Utilities.formatter.monthSymbols[firstDay.month - 1]
+            return month + ", \(firstDay.year)"
+        }
+    }
     var startDay: Day? {
         get {
             return selectedRange.start
@@ -53,14 +47,29 @@ class CalendarViewModel: NSObject {
         }
     }
     
+    var range: [Day] {
+        get {
+            return self.selectedRange.range
+        }
+    }
+    var numberOfRows: Double = 0.0;
+    
     weak var controller: UIViewController?
     
+    //MARK:private property
+    private var selectedRange: DateRange = DateRange()
+    
+
+    //MARK: Override methods
     init(withController controller: UIViewController) {
         super.init()
         self.controller = controller
         let currentDate = Date()
-        self.update(withDate: currentDate)
+        let currentDay = Day(withDate: currentDate)
+        self.update(withDate: currentDay)
     }
+    
+    //MARK: Public methods
     //select the date range according to previous selected range
     func select(day: Day?, completionHandler: @escaping ([Int]?) -> Void) {
         guard let day = day else {
@@ -69,6 +78,7 @@ class CalendarViewModel: NSObject {
             }
             return
         }
+        
         if selectedRange.range.isEmpty {
             selectedRange.start = day
         }else if let start = selectedRange.start {
@@ -134,10 +144,9 @@ class CalendarViewModel: NSObject {
             completionHandler(indices)
         }
     }
-}
-
-extension CalendarViewModel {
-    fileprivate func update(withDate date: Date) {
+    
+    func update(withDate day: Day) {
+        let date = day.date
         let calendar = Calendar.current
         let year = calendar.component(.year, from: date)
         let month = calendar.component(.month, from: date)
@@ -154,6 +163,7 @@ extension CalendarViewModel {
             return day != Day(withDate: Date(timeIntervalSince1970: -1))
         })
     }
+
 }
 
 
