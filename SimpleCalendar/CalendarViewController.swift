@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol CalendarSelection {
+    func calendar(selected range: [Day]) -> Void
+    func calendarWillSelected(from start: Date, to end: Date) -> Void
+}
+
 class CalendarViewController: UIViewController {
     
     fileprivate lazy var viewModel: CalendarViewModel = {
@@ -15,15 +20,18 @@ class CalendarViewController: UIViewController {
         return vm
     }()
     
+    fileprivate let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
+    
     var calendar: CalendarView = CalendarView(frame: .zero)
     
     var calendarHeightConstraint: NSLayoutConstraint?
     
+    var calendarTopConstraint: NSLayoutConstraint?
+    
     var frameHeight: CGFloat = 0 {
         didSet {
             if let calHeight = calendarHeightConstraint {
-                calHeight.isActive = false
-                calHeight.constant = frameHeight
+                calHeight.constant = self.frameHeight
                 calHeight.isActive = true
             }
         }
@@ -41,8 +49,16 @@ class CalendarViewController: UIViewController {
         }
     }
 
+    //MARK: ViewController override
     override func viewDidLoad() {
         super.viewDidLoad()
+        //view set up
+        view.backgroundColor = UIColor(white: 1, alpha: 0.4)
+        tapGesture.addTarget(self, action: #selector(self.tapOutsideCalender(_:)))
+        tapGesture.delegate = self
+        view.addGestureRecognizer(tapGesture)
+        //subView set up
+        
         self.calendar.grid.delegate = self
         _ = self.viewModel
         
@@ -55,21 +71,31 @@ class CalendarViewController: UIViewController {
         super.viewWillAppear(animated)
         view.addSubview(calendar)
         calendar.translatesAutoresizingMaskIntoConstraints = false
-        calendar.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
         calendar.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor).isActive = true
         calendar.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor).isActive = true
+        calendarTopConstraint = calendar.topAnchor.constraint(equalTo: view.bottomAnchor)
+        calendarTopConstraint?.isActive = true
         calendarHeightConstraint = calendar.heightAnchor.constraint(equalToConstant: frameHeight)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         reloadAllData()
         super.viewDidAppear(animated)
+        if let topConstraint = self.calendarTopConstraint {
+            topConstraint.constant = 0 - frameHeight - 5
+            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+        }
     }
     
     //MARK: Action methods
     
+    func tapOutsideCalender(_ sender: UITapGestureRecognizer) {
+        self.dismissWithAnimates()
+    }
+    
     func nextMonthButtonClicked(_ sender: UIButton) {
-//        sender.tintColor = sender.isHighlighted ? UIColor.gray : UIColor.blue
         guard let firstDayOfCurrentMonth = viewModel.currentMonth.first else { return }
         if let firstDayOfNextMonth = firstDayOfCurrentMonth.day(byAdding: .month, value: 1) {
             viewModel.update(withDate: firstDayOfNextMonth)
@@ -79,7 +105,6 @@ class CalendarViewController: UIViewController {
     }
     
     func previousMonthButtonClicked(_ sender: UIButton) {
-//        sender.tintColor = sender.isHighlighted ? UIColor.gray : UIColor.blue
         guard let firstDayOfCurrentMonth = viewModel.currentMonth.first else { return }
         if let firstDayOfPrevMonth = firstDayOfCurrentMonth.day(byAdding: .month, value: -1) {
             viewModel.update(withDate: firstDayOfPrevMonth)
@@ -87,10 +112,25 @@ class CalendarViewController: UIViewController {
             updateSelection(self.calendar.grid.collectionView)
         }
     }
+    
+    //MARK: Private Methods
+    private func dismissWithAnimates() {
+        if let topConstraint = calendarTopConstraint {
+            topConstraint.constant = 0
+            //TODO: pass the selected range
+            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
+                self.view.layoutIfNeeded()
+            }, completion: { [unowned self](finished) in
+                if (finished) {
+                    self.dismiss(animated: true, completion: nil)
+                }
+            })
+        }
+    }
     private func reloadAllData() {
-        let width: CGFloat = CGFloat(self.calendar.bounds.size.width) / 7.0
         self.calendar.topBanner.topBannerLabel.text = self.viewModel.monthString
         self.calendar.grid.collectionView.reloadData()
+        let width: CGFloat = CGFloat(self.calendar.bounds.size.width) / 7.0
         frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows) * width
     }
     
@@ -110,6 +150,7 @@ class CalendarViewController: UIViewController {
     }
 }
 
+//MARK: Collection view datasource extention
 extension CalendarViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -140,6 +181,7 @@ extension CalendarViewController: UICollectionViewDataSource {
     }
 }
 
+//MARK: CollectionView Delegate
 extension CalendarViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? DayCell, cell.isSelected else {
@@ -206,10 +248,24 @@ extension CalendarViewController: UICollectionViewDelegate {
     }
 }
 
+//MARK: Collection View flow layout delegate
 extension CalendarViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width: CGFloat = self.calendar.bounds.size.width / 7.0
         return CGSize(width: width, height: width)
+    }
+}
+
+//MARK: Collection View tap gestrue Recognizer delegate
+extension CalendarViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        switch gestureRecognizer {
+        case _ as UITapGestureRecognizer:
+            guard let currentView = touch.view, currentView.isDescendant(of: self.calendar) else { return true }
+            return false
+        default:
+            return true
+        }
     }
 }
 
