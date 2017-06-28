@@ -8,9 +8,8 @@
 
 import UIKit
 
-protocol CalendarSelection {
-    func calendar(selected range: [Day]) -> Void
-    func calendarWillSelected(from start: Date, to end: Date) -> Void
+protocol SimpleCalendarCommunication {
+    func willDismissCalendar(fromController: UIViewController, withSelection:[Day])
 }
 
 class CalendarViewController: UIViewController {
@@ -22,11 +21,15 @@ class CalendarViewController: UIViewController {
     
     fileprivate let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     
+    fileprivate var calendarHeightConstraint: NSLayoutConstraint?
+    
+    fileprivate var calendarTopConstraint: NSLayoutConstraint?
+    
+    //MARK: Public Properties
+    
     var calendar: CalendarView = CalendarView(frame: .zero)
     
-    var calendarHeightConstraint: NSLayoutConstraint?
-    
-    var calendarTopConstraint: NSLayoutConstraint?
+    var delegate: SimpleCalendarCommunication?
     
     var frameHeight: CGFloat = 0 {
         didSet {
@@ -38,6 +41,11 @@ class CalendarViewController: UIViewController {
     }
     
     var selected: [Day] {
+        set {
+            let sortedRange = newValue.sorted(by: {$0 <= $1})
+            self.viewModel.startDay = sortedRange.first
+            self.viewModel.endDay = sortedRange.last
+        }
         get {
             return viewModel.range
         }
@@ -53,7 +61,7 @@ class CalendarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //view set up
-        //TODO: needs to consider how to set the view's color to show the view in the back, otherwise this is no use.
+        self.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
         tapGesture.addTarget(self, action: #selector(self.tapOutsideCalender(_:)))
         tapGesture.delegate = self
         view.addGestureRecognizer(tapGesture)
@@ -117,12 +125,14 @@ class CalendarViewController: UIViewController {
     private func dismissWithAnimates() {
         if let topConstraint = calendarTopConstraint {
             topConstraint.constant = 0
-            //TODO: pass the selected range
             UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { [unowned self](finished) in
                 if (finished) {
-                    self.dismiss(animated: true, completion: nil)
+                    self.delegate?.willDismissCalendar(fromController: self, withSelection: self.selected)
+                    self.willMove(toParentViewController: nil)
+                    self.view.removeFromSuperview()
+                    self.removeFromParentViewController()
                 }
             })
         }

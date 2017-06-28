@@ -31,17 +31,27 @@ class CalendarViewModel: NSObject {
     var monthString: String {
         get {
             guard let firstDay = currentMonth.first else { return ""} 
-            let month = Utilities.formatter.monthSymbols[firstDay.month - 1]
-            return month + ", \(firstDay.year)"
+            let month = firstDay.monthString
+            return month + ", " + firstDay.yearString
         }
     }
     var startDay: Day? {
+        set {
+            if let s = newValue {
+                selectedRange.start = s
+            }
+        }
         get {
             return selectedRange.start
         }
     }
     
     var endDay: Day? {
+        set {
+            if let e = newValue {
+                selectedRange.end = e
+            }
+        }
         get {
             return selectedRange.end
         }

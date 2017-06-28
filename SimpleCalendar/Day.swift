@@ -97,3 +97,27 @@ extension Day: Comparable{
         return lhs == rhs || lhs > rhs
     }
 }
+
+//MARK: String representations for current day
+extension Day {
+    var monthString: String {
+        get {
+            return Utilities.formatter.monthSymbols[self.month - 1]
+        }
+    }
+    var weekDayString: String {
+        get {
+            return self.weekday.rawValue
+        }
+    }
+    var dayString: String {
+        get {
+            return "\(self.day)"
+        }
+    }
+    var yearString: String {
+        get {
+            return "\(self.year)"
+        }
+    }
+}

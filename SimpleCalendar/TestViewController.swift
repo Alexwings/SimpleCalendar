@@ -10,8 +10,35 @@ import UIKit
 
 class TestViewController: UIViewController {
     
+    var selectedDates: [Day] = [] {
+        didSet {
+            if !selectedDates.isEmpty {
+                guard let first = selectedDates.first, let last = selectedDates.last else { return }
+                if first == last {
+                    label.text = "\(first.monthString), \(first.day) \(first.year)"
+                }else {
+                    label.text = "\(first.monthString), \(first.day) \(first.year) -- \(last.monthString), \(last.day) \(last.year)"
+                }
+            }else {
+                label.text = "No Dates Selected"
+            }
+        }
+    }
+    
+    let label = UILabel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        label.textAlignment = .center
+        label.text = "No Dates Selected"
+        label.textColor = UIColor.blue
+        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
+        label.topAnchor.constraint(equalTo: view.topAnchor, constant: 60).isActive = true
+        label.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        label.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        label.heightAnchor.constraint(equalToConstant: 80).isActive = true
         
         let testButton = UIButton(frame: CGRect.zero)
         testButton.setTitle("Test", for: .normal)
@@ -29,7 +56,15 @@ class TestViewController: UIViewController {
         
         let calendar = CalendarViewController()
         self.modalPresentationStyle = .popover
-        self.present(calendar, animated: true, completion: nil)
-        
+        calendar.delegate = self
+        self.addChildViewController(calendar)
+        view.addSubview(calendar.view)
+        calendar.didMove(toParentViewController: self)
+    }
+}
+
+extension TestViewController: SimpleCalendarCommunication {
+    func willDismissCalendar(fromController calendar: UIViewController, withSelection selectedRange: [Day]) {
+        self.selectedDates = selectedRange
     }
 }
