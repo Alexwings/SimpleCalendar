@@ -53,7 +53,7 @@ class CalendarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //view set up
-        view.backgroundColor = UIColor(white: 1, alpha: 0.4)
+        //TODO: needs to consider how to set the view's color to show the view in the back, otherwise this is no use.
         tapGesture.addTarget(self, action: #selector(self.tapOutsideCalender(_:)))
         tapGesture.delegate = self
         view.addGestureRecognizer(tapGesture)
