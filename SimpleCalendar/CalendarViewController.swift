@@ -20,6 +20,11 @@ class CalendarViewController: UIViewController {
     }()
     
     fileprivate let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
+    fileprivate let swipeDownGestrue: UISwipeGestureRecognizer = {
+        let swipe = UISwipeGestureRecognizer()
+        swipe.direction = .down
+        return swipe
+    }()
     
     fileprivate var calendarHeightConstraint: NSLayoutConstraint?
     
@@ -62,9 +67,13 @@ class CalendarViewController: UIViewController {
         super.viewDidLoad()
         //view set up
         self.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
-        tapGesture.addTarget(self, action: #selector(self.tapOutsideCalender(_:)))
+        tapGesture.addTarget(self, action: #selector(self.gestrueHandler(_:)))
         tapGesture.delegate = self
         view.addGestureRecognizer(tapGesture)
+        
+        swipeDownGestrue.delegate = self
+        swipeDownGestrue.addTarget(self, action: #selector(self.gestrueHandler(_:)))
+        view.addGestureRecognizer(swipeDownGestrue)
         //subView set up
         
         self.calendar.grid.delegate = self
@@ -99,8 +108,21 @@ class CalendarViewController: UIViewController {
     
     //MARK: Action methods
     
-    func tapOutsideCalender(_ sender: UITapGestureRecognizer) {
-        self.dismissWithAnimates()
+    func gestrueHandler(_ sender: UIGestureRecognizer) {
+        switch sender {
+        case let tap as UITapGestureRecognizer:
+            if tap == self.tapGesture {
+                self.dismissWithAnimates()
+            }
+            break
+        case let swip as UISwipeGestureRecognizer:
+            if swip == self.swipeDownGestrue {
+                self.dismissWithAnimates()
+            }
+            break
+        default:
+            break
+        }
     }
     
     func nextMonthButtonClicked(_ sender: UIButton) {
@@ -122,21 +144,7 @@ class CalendarViewController: UIViewController {
     }
     
     //MARK: Private Methods
-    private func dismissWithAnimates() {
-        if let topConstraint = calendarTopConstraint {
-            topConstraint.constant = 0
-            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
-                self.view.layoutIfNeeded()
-            }, completion: { [unowned self](finished) in
-                if (finished) {
-                    self.delegate?.willDismissCalendar(fromController: self, withSelection: self.selected)
-                    self.willMove(toParentViewController: nil)
-                    self.view.removeFromSuperview()
-                    self.removeFromParentViewController()
-                }
-            })
-        }
-    }
+    
     private func reloadAllData() {
         self.calendar.topBanner.topBannerLabel.text = self.viewModel.monthString
         self.calendar.grid.collectionView.reloadData()
@@ -275,6 +283,34 @@ extension CalendarViewController: UIGestureRecognizerDelegate {
             return false
         default:
             return true
+        }
+    }
+}
+
+//MARK: methods to present self to parentController
+extension CalendarViewController {
+    public func presentCalender(from parentController: UIViewController, completionHandler: ((Bool) -> Void)?) {
+        parentController.addChildViewController(self)
+        parentController.view.addSubview(self.view)
+        if let completion = completionHandler {
+            completion(true)
+        }
+        self.didMove(toParentViewController: parentController)
+    }
+    
+    fileprivate func dismissWithAnimates() {
+        if let topConstraint = calendarTopConstraint {
+            topConstraint.constant = 0
+            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
+                self.view.layoutIfNeeded()
+            }, completion: { [unowned self](finished) in
+                if (finished) {
+                    self.delegate?.willDismissCalendar(fromController: self, withSelection: self.selected)
+                    self.willMove(toParentViewController: nil)
+                    self.view.removeFromSuperview()
+                    self.removeFromParentViewController()
+                }
+            })
         }
     }
 }

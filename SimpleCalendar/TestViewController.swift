@@ -57,9 +57,7 @@ class TestViewController: UIViewController {
         let calendar = CalendarViewController()
         self.modalPresentationStyle = .popover
         calendar.delegate = self
-        self.addChildViewController(calendar)
-        view.addSubview(calendar.view)
-        calendar.didMove(toParentViewController: self)
+        calendar.presentCalender(from: self, completionHandler: nil)
     }
 }
 
