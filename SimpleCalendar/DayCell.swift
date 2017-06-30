@@ -8,6 +8,8 @@
 
 import UIKit
 
+
+
 class DayCell: UICollectionViewCell {
     
     var day: Day? {
@@ -25,19 +27,14 @@ class DayCell: UICollectionViewCell {
         return l
     }()
     
-    let line: UILabel = {
-        let l = UILabel()
-        l.backgroundColor = UIColor.black
-        l.translatesAutoresizingMaskIntoConstraints = false
-        l.isHidden = true
-        return l
-    }()
+    var selectedPosition: SelectionPositionState = .undefined
     
     override var isSelected: Bool{
         didSet {
             self.label.textColor = isSelected ? UIConfig.selectedTextColor : UIConfig.normalTextColor
-            self.contentView.backgroundColor = isSelected ? UIConfig.cellSelectedColor : UIConfig.backgroundColor
-            self.line.isHidden = !isSelected
+            let radius = self.contentView.bounds.size.width / 4
+            self.contentView.layer.cornerRadius = self.isSelected ? radius : 0
+            self.contentView.backgroundColor = self.isSelected ? UIConfig.cellSelectedColor : UIConfig.backgroundColor
         }
     }
     
@@ -52,14 +49,9 @@ class DayCell: UICollectionViewCell {
     }
     
     private func setUpView(){
-        contentView.addSubview(line)
+        contentView.layer.masksToBounds = true
         contentView.addSubview(label)
         label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        
-        line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        line.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        line.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-        line.heightAnchor.constraint(equalToConstant: 2).isActive = true
     }
 }

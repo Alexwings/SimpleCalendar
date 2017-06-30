@@ -18,7 +18,7 @@
 		7DE47ED61EBCE670004B51DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DE47ED51EBCE670004B51DB /* Assets.xcassets */; };
 		7DE47ED91EBCE670004B51DB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DE47ED71EBCE670004B51DB /* LaunchScreen.storyboard */; };
 		7DE47EE11EBCE85E004B51DB /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE47EE01EBCE85E004B51DB /* CalendarView.swift */; };
-		7DE47EE31EBCEC6D004B51DB /* UIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE47EE21EBCEC6D004B51DB /* UIConfig.swift */; };
+		7DE47EE31EBCEC6D004B51DB /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE47EE21EBCEC6D004B51DB /* Utilities.swift */; };
 		7DE47EE51EBD2A85004B51DB /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE47EE41EBD2A85004B51DB /* TopBannerView.swift */; };
 		7DE47EE81EBD3170004B51DB /* WeekBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE47EE71EBD3170004B51DB /* WeekBannerView.swift */; };
 		7DE47EEA1EBD4262004B51DB /* DayGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE47EE91EBD4262004B51DB /* DayGridView.swift */; };
@@ -51,7 +51,7 @@
 		7DE47ED81EBCE670004B51DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7DE47EDA1EBCE670004B51DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7DE47EE01EBCE85E004B51DB /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
-		7DE47EE21EBCEC6D004B51DB /* UIConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIConfig.swift; sourceTree = "<group>"; };
+		7DE47EE21EBCEC6D004B51DB /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7DE47EE41EBD2A85004B51DB /* TopBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
 		7DE47EE71EBD3170004B51DB /* WeekBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekBannerView.swift; sourceTree = "<group>"; };
 		7DE47EE91EBD4262004B51DB /* DayGridView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayGridView.swift; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 				7DE47ED01EBCE670004B51DB /* CalendarViewController.swift */,
 				7DD328421ECBC986001EC779 /* Model */,
 				7DE47EE61EBD3157004B51DB /* Widgets */,
-				7DE47EE21EBCEC6D004B51DB /* UIConfig.swift */,
+				7DE47EE21EBCEC6D004B51DB /* Utilities.swift */,
 				7DE47ED51EBCE670004B51DB /* Assets.xcassets */,
 				7DE47ED71EBCE670004B51DB /* LaunchScreen.storyboard */,
 				7DE47EDA1EBCE670004B51DB /* Info.plist */,
@@ -258,7 +258,7 @@
 				7DE47EE81EBD3170004B51DB /* WeekBannerView.swift in Sources */,
 				7DD3283F1ECBB9F0001EC779 /* CalendarViewModel.swift in Sources */,
 				7DE47ED11EBCE670004B51DB /* CalendarViewController.swift in Sources */,
-				7DE47EE31EBCEC6D004B51DB /* UIConfig.swift in Sources */,
+				7DE47EE31EBCEC6D004B51DB /* Utilities.swift in Sources */,
 				7DE47EEA1EBD4262004B51DB /* DayGridView.swift in Sources */,
 				7DE47EE11EBCE85E004B51DB /* CalendarView.swift in Sources */,
 				7DE47ECF1EBCE670004B51DB /* AppDelegate.swift in Sources */,

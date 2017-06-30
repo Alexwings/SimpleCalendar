@@ -231,9 +231,10 @@ extension CalendarViewController: UICollectionViewDelegate {
                 return IndexPath(item: index, section: 0)
             })
             for ip in unselectedIndexPaths {
-                guard let cell = collectionView.cellForItem(at: ip) else { return }
+                guard let cell = collectionView.cellForItem(at: ip) as? DayCell else { return }
                 if cell.isSelected {
                     collectionView.deselectItem(at: ip, animated: false)
+                    cell.selectedPosition = .undefined
                 }
             }
         }
@@ -263,6 +264,10 @@ extension CalendarViewController: UICollectionViewDelegate {
                 collectionView.selectItem(at: ip, animated: false, scrollPosition: .left)
             }
         }
+        
+    }
+    private func updateSelectedPosition(_ collectionView: UICollectionView) {
+        //TODO: update the selected position of the cell to help for selection animation in the future
     }
 }
 

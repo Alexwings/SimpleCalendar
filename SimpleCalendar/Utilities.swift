@@ -53,6 +53,10 @@ enum Weekdays: String {
     }
 }
 
+enum SelectionPositionState: Int{
+    case start = 0, middle, end, undefined = -1;
+}
+
 class UIConfig {
     static let weekdays: [Weekdays] = [.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
     
@@ -64,7 +68,7 @@ class UIConfig {
     
     static let normalTextColor: UIColor = UIColor.blue
     
-    static let cellSelectedColor: UIColor = UIColor.blue
+    static let cellSelectedColor: UIColor = UIColor(red: 82, green: 191, blue: 248)
     
     static let backgroundColor: UIColor = UIColor.white
     
