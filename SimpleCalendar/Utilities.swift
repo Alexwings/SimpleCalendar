@@ -31,6 +31,30 @@ enum Weekdays: String {
             return .undefined
         }
     }
+    func number() -> Int {
+        switch self {
+        case .sunday:
+            return 1
+        case .monday:
+            return 2
+        case .tuesday:
+            return 3
+        case .wednesday:
+            return 4
+        case .thursday:
+            return 5
+        case .friday:
+            return 6
+        case .saturday:
+            return 7
+        case .undefined:
+            return -1
+        }
+    }
+}
+
+enum SelectionPositionState: Int{
+    case start = 0, middle, end, undefined = -1;
 }
 
 class UIConfig {
@@ -44,7 +68,7 @@ class UIConfig {
     
     static let normalTextColor: UIColor = UIColor.blue
     
-    static let cellSelectedColor: UIColor = UIColor.blue
+    static let cellSelectedColor: UIColor = UIColor(red: 82, green: 191, blue: 248)
     
     static let backgroundColor: UIColor = UIColor.white
     
@@ -58,15 +82,18 @@ class UIConfig {
     
     static let topBannerButtonWidth: CGFloat = 50
     
-    static let mainFrameHeight: CGFloat = 280
-    
     static let weekdayBannerHeight: CGFloat = 30
+    static let windowWidth: CGFloat = UIScreen.main.bounds.size.width
     
     func configureTopBanner(button: inout UIButton) {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIConfig.topBannerButtonColor
         //TODO: set other parameters here
     }
+}
+
+class Utilities {
+    static var formatter = DateFormatter()
 }
 
 extension UIColor {
