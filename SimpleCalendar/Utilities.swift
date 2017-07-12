@@ -64,26 +64,26 @@ class UIConfig {
     
     private init() {}
     
-    static let selectedTextColor: UIColor = UIColor.white
+    static var selectedTextColor: UIColor = UIColor.white
     
-    static let normalTextColor: UIColor = UIColor.blue
+    static var normalTextColor: UIColor = UIColor.blue
     
-    static let cellSelectedColor: UIColor = UIColor(red: 82, green: 191, blue: 248)
+    static var cellSelectedColor: UIColor = UIColor(red: 82, green: 191, blue: 248)
     
-    static let backgroundColor: UIColor = UIColor.white
+    static var backgroundColor: UIColor = UIColor.white
     
-    static let topBannerBackgroundColor: UIColor = UIColor(red: 102, green: 204, blue: 255)
+    static var topBannerBackgroundColor: UIColor = UIColor(red: 102, green: 204, blue: 255)
     
-    static let topBannerButtonColor: UIColor = UIColor.clear
+    static var topBannerButtonColor: UIColor = UIColor.clear
     
-    static let weekBannerColor: UIColor = UIColor(red: 13, green: 63, blue: 145)
+    static var weekBannerColor: UIColor = UIColor(red: 13, green: 63, blue: 145)
     
-    static let topBannerHeight: CGFloat = 40
+    static var topBannerHeight: CGFloat = 40
     
-    static let topBannerButtonWidth: CGFloat = 50
+    static var topBannerButtonWidth: CGFloat = 50
     
-    static let weekdayBannerHeight: CGFloat = 30
-    static let windowWidth: CGFloat = UIScreen.main.bounds.size.width
+    static var weekdayBannerHeight: CGFloat = 30
+    static var windowWidth: CGFloat = UIScreen.main.bounds.size.width
     
     func configureTopBanner(button: inout UIButton) {
         button.translatesAutoresizingMaskIntoConstraints = false

@@ -27,11 +27,11 @@ class BaseView: UIView {
 
 class CalendarView: BaseView {
     
-    let topBanner: TopBannerView = TopBannerView(frame: .zero)
+    internal let topBanner: TopBannerView = TopBannerView(frame: .zero)
     
-    let weekdayBanner: WeekBannerView = WeekBannerView(frame: .zero)
+    internal let weekdayBanner: WeekBannerView = WeekBannerView(frame: .zero)
     
-    let grid: DayGridView = DayGridView(frame: .zero)
+    internal let grid: DayGridView = DayGridView(frame: .zero)
     
     override func setupViews() {
         

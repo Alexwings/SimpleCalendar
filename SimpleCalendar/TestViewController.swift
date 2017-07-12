@@ -55,6 +55,7 @@ class TestViewController: UIViewController {
     func buttonClicked(_ sender: UIButton) {
         
         let calendar = CalendarViewController()
+        calendar.allowMutiSelection = false
         self.modalPresentationStyle = .popover
         calendar.delegate = self
         calendar.presentCalender(from: self, completionHandler: nil)

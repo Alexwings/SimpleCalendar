@@ -32,16 +32,22 @@ class CalendarViewController: UIViewController {
     
     //MARK: Public Properties
     
-    var calendar: CalendarView = CalendarView(frame: .zero)
+    internal var calendar: CalendarView = CalendarView(frame: .zero)
     
-    var delegate: SimpleCalendarCommunication?
+    internal var delegate: SimpleCalendarCommunication?
     
-    var frameHeight: CGFloat = 0 {
+    internal var frameHeight: CGFloat = 0 {
         didSet {
             if let calHeight = calendarHeightConstraint {
                 calHeight.constant = self.frameHeight
                 calHeight.isActive = true
             }
+        }
+    }
+    
+    var allowMutiSelection: Bool = true {
+        didSet {
+            self.calendar.grid.collectionView.allowsMultipleSelection = allowMutiSelection
         }
     }
     
@@ -108,7 +114,7 @@ class CalendarViewController: UIViewController {
     
     //MARK: Action methods
     
-    func gestrueHandler(_ sender: UIGestureRecognizer) {
+    internal func gestrueHandler(_ sender: UIGestureRecognizer) {
         switch sender {
         case let tap as UITapGestureRecognizer:
             if tap == self.tapGesture {
@@ -125,7 +131,7 @@ class CalendarViewController: UIViewController {
         }
     }
     
-    func nextMonthButtonClicked(_ sender: UIButton) {
+    internal func nextMonthButtonClicked(_ sender: UIButton) {
         guard let firstDayOfCurrentMonth = viewModel.currentMonth.first else { return }
         if let firstDayOfNextMonth = firstDayOfCurrentMonth.day(byAdding: .month, value: 1) {
             viewModel.update(withDate: firstDayOfNextMonth)
@@ -134,7 +140,7 @@ class CalendarViewController: UIViewController {
         }
     }
     
-    func previousMonthButtonClicked(_ sender: UIButton) {
+    internal func previousMonthButtonClicked(_ sender: UIButton) {
         guard let firstDayOfCurrentMonth = viewModel.currentMonth.first else { return }
         if let firstDayOfPrevMonth = firstDayOfCurrentMonth.day(byAdding: .month, value: -1) {
             viewModel.update(withDate: firstDayOfPrevMonth)

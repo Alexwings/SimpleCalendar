@@ -10,10 +10,10 @@ import UIKit
 
 class DayGridView: BaseView {
     
-    static let cellIdentifier = "dayGridIdetifier"
-    static let emptyCellIdentifier = "emptyDayIdentifier"
+    internal static let cellIdentifier = "dayGridIdetifier"
+    internal static let emptyCellIdentifier = "emptyDayIdentifier"
     
-    var delegate: (UICollectionViewDataSource & UICollectionViewDelegate & UICollectionViewDelegateFlowLayout)? {
+    internal var delegate: (UICollectionViewDataSource & UICollectionViewDelegate & UICollectionViewDelegateFlowLayout)? {
         set {
             self.collectionView.dataSource = newValue
             self.collectionView.delegate = newValue
@@ -23,7 +23,7 @@ class DayGridView: BaseView {
         }
     }
     
-    lazy var collectionView: UICollectionView = { [unowned self] in
+    internal lazy var collectionView: UICollectionView = { [unowned self] in
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
         layout.minimumInteritemSpacing = 0
@@ -36,7 +36,7 @@ class DayGridView: BaseView {
         cl.register(UICollectionViewCell.self, forCellWithReuseIdentifier: DayGridView.emptyCellIdentifier)
         cl.translatesAutoresizingMaskIntoConstraints = false
         return cl
-    }()
+        }()
     
     override func setupViews() {
         super.setupViews()
@@ -50,7 +50,7 @@ class DayGridView: BaseView {
 }
 
 extension UICollectionView {
-    func deselectCells(forIndexPaths indexPaths: [IndexPath]?) {
+    internal func deselectCells(forIndexPaths indexPaths: [IndexPath]?) {
         guard let selectedIndexPaths = indexPaths else { return }
         for ip in selectedIndexPaths {
             guard let _ = self.cellForItem(at: ip) else { continue }
