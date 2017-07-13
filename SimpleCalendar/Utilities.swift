@@ -94,6 +94,18 @@ class UIConfig {
 
 class Utilities {
     static var formatter = DateFormatter()
+    class func animateCellSelection(at position: SelectionPositionState, for cell: DayCell) {
+        switch position {
+        case .start:
+            print("Should animate at start position")
+        case .middle:
+            print("Change to middle position")
+        case .end:
+            print("Should animate at end position")
+        case .undefined:
+            print("Not selected position")
+        }
+    }
 }
 
 extension UIColor {

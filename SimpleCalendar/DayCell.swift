@@ -27,7 +27,11 @@ class DayCell: UICollectionViewCell {
         return l
     }()
     
-   internal var selectedPosition: SelectionPositionState = .undefined
+    internal var selectedPosition: SelectionPositionState = .undefined {
+        didSet {
+            Utilities.animateCellSelection(at: selectedPosition, for: self)
+        }
+    }
     
     override var isSelected: Bool{
         didSet {

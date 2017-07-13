@@ -51,6 +51,8 @@ class CalendarViewController: UIViewController {
         }
     }
     
+    var isFullView: Bool = false
+    
     var selected: [Day] {
         set {
             let sortedRange = newValue.sorted(by: {$0 <= $1})
@@ -75,11 +77,13 @@ class CalendarViewController: UIViewController {
         self.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
         tapGesture.addTarget(self, action: #selector(self.gestrueHandler(_:)))
         tapGesture.delegate = self
-        view.addGestureRecognizer(tapGesture)
+        if !isFullView {
+            view.addGestureRecognizer(tapGesture)
+            view.addGestureRecognizer(swipeDownGestrue)
+        }
         
         swipeDownGestrue.delegate = self
         swipeDownGestrue.addTarget(self, action: #selector(self.gestrueHandler(_:)))
-        view.addGestureRecognizer(swipeDownGestrue)
         //subView set up
         
         self.calendar.grid.delegate = self
@@ -94,17 +98,21 @@ class CalendarViewController: UIViewController {
         super.viewWillAppear(animated)
         view.addSubview(calendar)
         calendar.translatesAutoresizingMaskIntoConstraints = false
-        calendar.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor).isActive = true
-        calendar.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor).isActive = true
+        calendar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        calendar.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         calendarTopConstraint = calendar.topAnchor.constraint(equalTo: view.bottomAnchor)
-        calendarTopConstraint?.isActive = true
         calendarHeightConstraint = calendar.heightAnchor.constraint(equalToConstant: frameHeight)
+        if isFullView {
+            frameHeight = self.view.bounds.size.height
+        }
+        calendarTopConstraint?.isActive = true
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         reloadAllData()
         super.viewDidAppear(animated)
-        if let topConstraint = self.calendarTopConstraint {
+        if let topConstraint = self.calendarTopConstraint, !isFullView {
             topConstraint.constant = 0 - frameHeight - 5
             UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
                 self.view.layoutIfNeeded()
@@ -154,8 +162,10 @@ class CalendarViewController: UIViewController {
     private func reloadAllData() {
         self.calendar.topBanner.topBannerLabel.text = self.viewModel.monthString
         self.calendar.grid.collectionView.reloadData()
-        let width: CGFloat = CGFloat(self.calendar.bounds.size.width) / 7.0
-        frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows) * width
+        if !isFullView {
+            let width: CGFloat = CGFloat(self.calendar.bounds.size.width) / 7.0
+            frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows) * width
+        }
     }
     
     private func updateSelection(_ collectionView: UICollectionView) {
@@ -239,8 +249,8 @@ extension CalendarViewController: UICollectionViewDelegate {
             for ip in unselectedIndexPaths {
                 guard let cell = collectionView.cellForItem(at: ip) as? DayCell else { return }
                 if cell.isSelected {
+                    self.updateSelectedPosition(collectionView, at: ip)
                     collectionView.deselectItem(at: ip, animated: false)
-                    cell.selectedPosition = .undefined
                 }
             }
         }
@@ -267,13 +277,27 @@ extension CalendarViewController: UICollectionViewDelegate {
             })
             collectionView.deselectCells(forIndexPaths: collectionView.indexPathsForSelectedItems)
             for ip in selectedIndexPaths {
+                self.updateSelectedPosition(collectionView, at: ip)
                 collectionView.selectItem(at: ip, animated: false, scrollPosition: .left)
             }
         }
-        
     }
-    private func updateSelectedPosition(_ collectionView: UICollectionView) {
+    private func updateSelectedPosition(_ collectionView: UICollectionView, at ip: IndexPath) {
         //TODO: update the selected position of the cell to help for selection animation in the future
+        if let c = collectionView.cellForItem(at: ip) as? DayCell {
+            if let cday = c.day {
+                if let s = self.viewModel.startDay, cday == s {
+                    c.selectedPosition = .start
+                }
+                else if let e = self.viewModel.endDay, cday == e {
+                    c.selectedPosition = .end
+                }else if self.viewModel.range.contains(where: {$0 == cday}){
+                    c.selectedPosition = .middle
+                }else {
+                    c.selectedPosition = .undefined
+                }
+            }
+        }
     }
 }
 
