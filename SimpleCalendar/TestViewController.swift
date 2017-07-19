@@ -90,7 +90,8 @@ class TestViewController: UIViewController {
         
         let calendar = CalendarViewController()
         calendar.allowMutiSelection = self.allowMultiSelect
-        self.modalPresentationStyle = .popover
+        calendar.isFullView = true
+        self.modalPresentationStyle = .pageSheet
         calendar.delegate = self
         calendar.presentCalender(from: self, completionHandler: nil)
     }

@@ -26,6 +26,18 @@ class CalendarViewController: UIViewController {
         return swipe
     }()
     
+    fileprivate let swipeLeftGesture: UISwipeGestureRecognizer = {
+        let swipe = UISwipeGestureRecognizer()
+        swipe.direction = .left
+        return swipe
+    }()
+    
+    fileprivate let swipeRightGesture: UISwipeGestureRecognizer = {
+        let swipe = UISwipeGestureRecognizer()
+        swipe.direction = .right
+        return swipe
+    }()
+    
     fileprivate var calendarHeightConstraint: NSLayoutConstraint?
     
     fileprivate var calendarTopConstraint: NSLayoutConstraint?
@@ -79,11 +91,18 @@ class CalendarViewController: UIViewController {
         tapGesture.delegate = self
         if !isFullView {
             view.addGestureRecognizer(tapGesture)
-            view.addGestureRecognizer(swipeDownGestrue)
         }
+        
+        view.addGestureRecognizer(swipeDownGestrue)
+        view.addGestureRecognizer(swipeLeftGesture)
+        view.addGestureRecognizer(swipeRightGesture)
         
         swipeDownGestrue.delegate = self
         swipeDownGestrue.addTarget(self, action: #selector(self.gestrueHandler(_:)))
+        swipeLeftGesture.delegate = self
+        swipeLeftGesture.addTarget(self, action: #selector(self.gestrueHandler(_:)))
+        swipeRightGesture.delegate = self
+        swipeRightGesture.addTarget(self, action: #selector(self.gestrueHandler(_:)))
         //subView set up
         
         self.calendar.grid.delegate = self
@@ -112,11 +131,15 @@ class CalendarViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         reloadAllData()
         super.viewDidAppear(animated)
-        if let topConstraint = self.calendarTopConstraint, !isFullView {
-            topConstraint.constant = 0 - frameHeight - 5
-            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
+        if let topConstraint = self.calendarTopConstraint {
+            topConstraint.constant = 0 - frameHeight
+            if !isFullView {
+                UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
+                    self.view.layoutIfNeeded()
+                }, completion: nil)
+            }else {
                 self.view.layoutIfNeeded()
-            }, completion: nil)
+            }
         }
     }
     
@@ -130,8 +153,21 @@ class CalendarViewController: UIViewController {
             }
             break
         case let swip as UISwipeGestureRecognizer:
-            if swip == self.swipeDownGestrue {
+            let direction = swip.direction
+            switch direction {
+            case UISwipeGestureRecognizerDirection.down:
                 self.dismissWithAnimates()
+                break
+            case UISwipeGestureRecognizerDirection.left:
+                self.nextMonthButtonClicked(nil)
+                break
+            case UISwipeGestureRecognizerDirection.right:
+                self.previousMonthButtonClicked(nil)
+                break
+            case UISwipeGestureRecognizerDirection.up:
+                break
+            default:
+                break
             }
             break
         default:
@@ -139,7 +175,7 @@ class CalendarViewController: UIViewController {
         }
     }
     
-    internal func nextMonthButtonClicked(_ sender: UIButton) {
+    internal func nextMonthButtonClicked(_ sender: UIButton!) {
         guard let firstDayOfCurrentMonth = viewModel.currentMonth.first else { return }
         if let firstDayOfNextMonth = firstDayOfCurrentMonth.day(byAdding: .month, value: 1) {
             viewModel.update(withDate: firstDayOfNextMonth)
@@ -148,7 +184,7 @@ class CalendarViewController: UIViewController {
         }
     }
     
-    internal func previousMonthButtonClicked(_ sender: UIButton) {
+    internal func previousMonthButtonClicked(_ sender: UIButton!) {
         guard let firstDayOfCurrentMonth = viewModel.currentMonth.first else { return }
         if let firstDayOfPrevMonth = firstDayOfCurrentMonth.day(byAdding: .month, value: -1) {
             viewModel.update(withDate: firstDayOfPrevMonth)
@@ -164,7 +200,8 @@ class CalendarViewController: UIViewController {
         self.calendar.grid.collectionView.reloadData()
         if !isFullView {
             let width: CGFloat = CGFloat(self.calendar.bounds.size.width) / 7.0
-            frameHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows) * width
+            let newHeight = UIConfig.topBannerHeight + UIConfig.weekdayBannerHeight + CGFloat(self.viewModel.numberOfRows) * width
+            frameHeight = max(newHeight, frameHeight)
         }
     }
     
