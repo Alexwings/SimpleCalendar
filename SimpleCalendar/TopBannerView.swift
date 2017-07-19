@@ -10,7 +10,7 @@ import UIKit
 
 class TopBannerView: BaseView {
     
-    let prevMonthButton: UIButton = {
+    internal let prevMonthButton: UIButton = {
         var btn = UIButton()
         let prevImage = UIImage(named: "back")!.withRenderingMode(.alwaysTemplate)
         btn.setImage(prevImage, for: .normal)
@@ -20,16 +20,16 @@ class TopBannerView: BaseView {
         return btn
         }() 
     
-    let nextMonthButton: UIButton = {
+    internal let nextMonthButton: UIButton = {
         var btn = UIButton()
         let nextImage = UIImage(named: "next")!.withRenderingMode(.alwaysTemplate)
         btn.setImage(nextImage, for: .normal)
         btn.tintColor = UIColor.blue
         UIConfig.shared.configureTopBanner(button: &btn)
         return btn
-    }()
+     }()
     
-    let topBannerLabel: UILabel = {
+    internal let topBannerLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = UIConfig.topBannerBackgroundColor
         label.text = "April, 26th"

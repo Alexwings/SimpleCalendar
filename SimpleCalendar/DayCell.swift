@@ -12,14 +12,14 @@ import UIKit
 
 class DayCell: UICollectionViewCell {
     
-    var day: Day? {
+   internal var day: Day? {
         didSet {
             if let d = day {
                 label.text = String(d.day)
             }
         }
     }
-    let label: UILabel = {
+   internal let label: UILabel = {
         let l = UILabel()
         l.text = "01"
         l.textColor = UIConfig.normalTextColor
@@ -27,7 +27,11 @@ class DayCell: UICollectionViewCell {
         return l
     }()
     
-    var selectedPosition: SelectionPositionState = .undefined
+    internal var selectedPosition: SelectionPositionState = .undefined {
+        didSet {
+            Utilities.animateCellSelection(at: selectedPosition, for: self)
+        }
+    }
     
     override var isSelected: Bool{
         didSet {

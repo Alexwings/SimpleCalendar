@@ -10,7 +10,7 @@ import UIKit
 
 class WeekBannerView: BaseView {
     
-    lazy var labels: [UILabel] = {
+    internal lazy var labels: [UILabel] = {
         var arr: [UILabel] = []
         for day in UIConfig.weekdays {
             let l = UILabel()
